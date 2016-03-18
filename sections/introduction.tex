@@ -10,11 +10,13 @@ For example there are many different variants of \gls{ao} to approximate where i
 
 \gls{gi} tries to simulate correct lighting in a scene without using separate methods for certain effects. Rendering using \gls{pm} makes it possible to create direct and indirect light (both diffuse and specular), caustics and shadows making it one of the more popular techniques for off-line rendering when high quality is needed because it converges toward a correct solution when more photons are used.
 
+
+
+\section{Purpose}
+
 However, most solutions for \gls{gi}~\cite{sotagi} does not run in real-time, but in the recent years due to hardware performance increase and novel methods, real time solutions to \gls{gi} has been demonstrated on high-end hardware. Since the hardware in mobile devices are making great progress (still far from high-end desktop solutions) and since it has already been proven once~\cite{gimobile} it would be interesting to see how far the latest mobile generation can push global illumination on limited hardware.
 
 This is especially interesting since \gls{vr} and \gls{ar} are making an entrance to the entertainment scene. It would be of huge value if the devices that we put on our heads manage to produce impressive graphics without having to rely on server side graphics like described in~\cite{cloudlight}. While the idea of calculating graphics and lighting on a server and basically streaming the content to clients is very interesting, it does have a lot of limiting factors mainly when it comes to network connection and mobility. Investigating where the limit is on this generations mobile devices is therefore still an important question.
-
-\section{Purpose}
 
 \section{Problem Statement}
 
