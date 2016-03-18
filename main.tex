@@ -7,17 +7,15 @@
   % Font options: 'kp' (default), 'times', 'lm'.  The KpFonts (loaded using 'kp'), is the most complete font among the provided options.  Among other, it supports slanted small caps.  See rtthesis.cls for more details regarding the font options.
   largesmallcaps,intlimits,widermath,% Good options to KpFonts.
   sharecounter,nobreak,definition=marks,%  See comments in the results chapter of this document for more information on these options!
-  %numbers, % If you want to cite references by numbers, use this option.
+  numbers, % If you want to cite references by numbers, use this option.
   noparts% Use option 'noparts' if you do not make use of part divisions.
 ]{rtthesis/rtthesis}
-
-
 
 \usepackage{mythesis}
 
 \graphicspath{{fig/}}
 \usepackage{subfiles}
-\usepackage[acronym, toc]{glossaries}
+\usepackage[acronym, toc, nonumberlist]{glossaries}
 \makeglossaries
 \input{glossary.tex}%
 
@@ -34,8 +32,8 @@
 \subfile{sections/thanks}
 
 \tableofcontents
-\printglossaries[type=\acronymtype]
-\subfile{sections/notation}
+\glsaddall
+\printglossaries
 
 \mainmatter%
 
