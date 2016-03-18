@@ -17,7 +17,8 @@
 
 \graphicspath{{fig/}}
 \usepackage{subfiles}
-\usepackage{glossaries}
+\usepackage[acronym, toc]{glossaries}
+\makeglossaries
 \input{glossary.tex}%
 
 
@@ -33,6 +34,7 @@
 \subfile{sections/thanks}
 
 \tableofcontents
+\printglossaries[type=\acronymtype]
 \subfile{sections/notation}
 
 \mainmatter%
