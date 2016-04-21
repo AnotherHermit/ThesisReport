@@ -1,0 +1,103 @@
+\chapter{Theoretical Background}\label{cha:theory}
+
+TODO: IMAGES with examples for all sections below.
+TODO: This chapter should be totally objective and describe all theoretical background for all concepts used in later sections. 
+
+Light when light interacts with a scene there are many different effects that can be seen, many of which are hard to simulate and many of them are very subtle. Yet realistic light is one of the most important parts in making a rendering look plausible. 
+
+In real-time rendering these effects are commonly created by different methods and then put together or rendered beforehand and therefore not present for dynamic objects. Global Illumination techniques tries to simulate many of these effects in a single algorithm by different ways of modeling light and the interactions with the scene. There are a lot of different Global Illumination algorithms and some of the more popular ones are \gls{pm} and \gls{rt} however these techniques are not currently run in real-time. One of the more recent techniques is \gls{vct}, which is the one studied in this thesis.
+
+In the following sections the most common light interaction effects will be discussed shortly and the chapter will end with a summary of which effects that should be modeled by the implementation in this work and how the different effects are handled.
+
+\section{Light}
+
+As Global Illumination is a light model it is only natural to start with the different lights typical of a computational rendering. There are a number of different ways of modeling light that acts like the typical light sources and some of them will be described below. 
+
+\subsection{Directional Light}
+
+The most common or simplest light source is the directional light. This light simulates a light source that is very far away, so that only the direction of the light is interesting. For example sunlight would be modeled as a directional light source. This is probably the easiest light to simulate since it only depends on a fixed direction for the whole scene. since the light is directional it is quite simple to create shadows from this kind of light as well by using shadow maps.
+
+\subsection{Point Light}
+
+Point light sources are similar to directional light only the direction is calculated for each point in the scene, this requires a bit more calculation but has more uses, especially for indoor scenes. This kind of light takes more work to create shadows for, since the light spreads in all directions.
+
+\subsection{Spot Light}
+
+Spot lights can be created from a point light and a direction and an angle (or two), where the angle decides the radius of the spot light. There is also a possibility of using two different angles, where the area between the two angles is where the light fades to shadow. This kind of light is more like the directional light when it comes to creating shadows, since the light spread in just a limited direction.
+
+\subsection{Emissive Materials}
+
+Another type of light source that is not that common but quite simple to implement in \gls{vct} is emissive materials. This is objects that behave like glowsticks and spreads light from the whole object. Point light sources can give the impression of a small object emitting light which in cases of a brazier. One way to overcome this is to use multiple points to give the light some volume, another is to use emissive materials.
+
+\section{Shadows}
+
+After light the most important effect is the shadows. It adds a lot of information about the depth and object placement within the scene. As with light there are different types of shadows coming from different light interactions. 
+
+\subsection{Direct Shadows}
+
+The most noticeable type of shadows are the direct shadows which are very distinct. These shadows are the result of direct interaction with a light source, such as directional or point lights. 
+
+The softness of the shadow also gives information about the light. On a cloudy day for example shadows are very soft or non-existent and on midday in summer shadows are sharp. Being able to model both adds a level of realism that can be hard to define when just looking at a scene.
+
+Indoor lights also create different types of shadows, smaller sources give sharper shadows while a large source would give softer shadows. 
+
+Another subtle cue for realism is that the shadow should be sharper closer to the source of the shadow casting object and get softer the further away it gets. 
+
+There are many different techniques for creating shadows but the most commonly used is different versions of shadow mapping. The main reason there is a big variety of shadow mapping techniques is that soft shadows are difficult to model using shadow mapping.
+
+\subsection{Indirect Shadows}
+
+Indirect shadows are shadows created when the light bounces in the scene. Compared to direct shadows, indirect shadows are quite difficult to simulate correctly. A direct shadow only requires information about each light source that is visible from a point and there are solutions for many light sources. However to create indirect shadows or shadows that come from the light bouncing in the scene it gets more complicated since information about how each light source is bouncing in the scene is needed. 
+
+This effect can be approximated by \gls{ao} for which there are many different solutions. \gls{ao} usually gives reasonable results and gives depth information about the scene. However, since it is an approximation there are visual artifacts that can be quite obvious.
+
+\section{Materials}
+
+Different materials reflect light differently and setting correct parameters works very well in distinguishing different objects. The light-material interaction can be described by equation XX below.
+
+TODO: Material equation here
+
+This equation is usually simplified into two cases. The first is the diffuse component and the other is the specular component. Together they give a good approximation of most materials.
+
+, which determines how "shiny" a material is.
+The higher the specularity the closer to a fully reflective surface the material is. Combining these two gives a pretty good approximation for materials in between the extremes.
+
+\subsection{Diffuse Light}
+
+The diffuse part describes light spreading evenly in all direction when the material is hit, only the incoming angle of the light affects the intensity. An example of a purely diffuse material would be paper which looks the same from all directions. This is also referred to as a Lambertian material. Equation XX below describes how light spreads in the scene from a diffuse surface.
+
+TODO: Lambertian equation here.
+
+Looking at figure XX below the scene is quite plain since there is not much information to separate the different surfaces.
+
+\subsection{Specular Component}
+
+The specular part describes how "shiny" a material is and by setting a different specularity value, the surface will be more or less reflective. This is described in equation XX below.
+
+TODO: Specular equation here.
+
+As previously stated this describes how light should be reflected on the material. A high specularity creates a very focused reflection and creates the appearance of a very shiny object. A low specularity gives the appearance of something a bit more rough. Adding the specularity to the previous image in figure XX shows that the scene now looks better.
+
+\section{Other Effects}
+
+There are some effects that are not just light or shadow but adds a lot of realism to a scene. These effects are normally not modeled as part of a system because they usually require special considerations and are quite hard to simulate.
+
+\subsection{Caustics}
+
+Caustics is the effect that can be seen in either the bottom of a pool or at the walls around water. It comes from the light being focused either by reflection or refraction in the water. The problem of simulating this effect comes from the fact that the light has to interact with the water surface, which usually requires some form of ray-casting. Some Global Illumination techniques can handle this effect, for example \gls{pm}.
+
+\subsection{God Rays}
+
+God rays are a term for when the light interacts with the medium it passes through, the name is from the effect that can be observed when light shines through a cloud and rays are visible. This effect is more commonly observed underwater and gives the surrounding a feel of density. This effect is usually simulated with special techniques and not part of the main method.
+
+\subsection{Scattering}
+
+When light shines trough translucent materials the light gets stuck inside and you get the effect that looks like light shining through colored ice, like ice cream. This effect also requires interaction with the material and depends on the thickness of the object being hit by the light. In the shallow parts it should shine through and give the material a kind of glow and in the thicker it should kind of be a self shadowing.
+
+\section{Data Structures}
+
+\subsection{Octree}
+
+\subsection{3D Mipmap}
+
+\subsection{3D Clipmap}

@@ -1,13 +1,18 @@
 \chapter{Introduction}\label{cha:intro}
 
-One of the most important parts of making a 3D scene look realistic is illumination and shadows. 
-It makes a big difference in grounding objects which gives the sense of depth to a scene. 
+TODO: This is the most important chapter writing wise since this is the part most diverse people will read.
+
+In computer graphics one of the most important parts of making a scene look realistic is the illumination. It grounds objects and creates depth in a scene by creating shadows and gives information about materials by different light interactions with the objects. 
 Even though realistic illumination has been a goal of 3D rendering since the beginning of computer graphics there is still a lot of work to be done, especially when it comes to real time solutions.
 
 \section{Motivation}
 
+TODO: This text should be very easy to understand and be intriguing for the reader.
+
 Illumination of a scene in computer graphics is a very computationally expensive task. 
-In order to make a scene render in real time a lot of effort has been made to get effects that approximate certain effects without expensive calculations per frame.
+In order to make a scene render in real time a lot of effort has been made to approximate certain lighting effects without expensive calculations.
+
+For example there are techniques for simulating the shadows cast from light bouncing in the scene, usually 
 
 For example there are many different variants of \gls{ao} which makes tight spaces darker to approximate shadows from bouncing light. 
 Other techniques precalculate advanced lighting effects for static objects and store textures or other look-up-tables for later access. 
@@ -17,6 +22,8 @@ While many of these techniques make it possible to interact with scenes that wou
 Rendering using, for example \gls{pm}, makes it possible to create direct and indirect light (both diffuse and specular), caustics and shadows making it one of the more popular techniques for off-line rendering when high quality is needed, because it converges toward a correct solution when more photons are used.
 
 \section{Purpose}
+
+TODO: This text can be a little more technical but should lead up to the questions in the next section.
 
 Most solutions for \gls{gi}~\cite{sotagi} does not run in real-time (or even interactive frame-rates), but in the recent years due to hardware performance increase and novel methods (especially \gls{vct}), real time solutions to \gls{gi} has been demonstrated on high-end hardware. 
 
@@ -30,15 +37,17 @@ Investigating where the limit is on this generations mobile devices is therefore
 
 \section{Problem Statement}
 
+TODO: Don't answer the questions here. Move answers to later chapters
+
 \begin{itemize}
-  \item \textit{How far can we take \gls{gi} on mobile devices using \gls{vct}?}
+  \item \textit{Is \acrlong{gi} on mobile devices possible using modern hardware?}
 \end{itemize}
 
 Previous results from~\cite{gimobile} show that \gls{gi} in real-time is possible on mobile devices using \glspl{vpl}. 
 Even though the results are quite recent the pace of improvement in mobile computational power means that there should be room for more advanced approaches, like \gls{vct}.
 
 \begin{itemize}
-  \item \textit{Does \gls{vct} scale well enough to be used on limited hardware such as a mobile device?}
+  \item \textit{Is there a method for \acrlong{gi} that scale well enough to be used on limited hardware such as a mobile device?}
 \end{itemize}
 
 \gls{vct} have parameters that can be tuned between speed and quality. 
@@ -52,7 +61,9 @@ The voxelization in particular can make a large difference for the performance, 
 The hardware structure on the mobile platforms are quite different from desktop hardware. 
 Using a combined memory model and very limited shared memory (if any) between \gls{gpu} cores makes it necessary to adapt the code and the algorithms used.
 
-\section{Delimitations}
+\section{Limitations}
+
+TODO: Make point list and maybe a short and concise reasoning for why.
 
 Only devices capable of running \gls{ogles} 3.1 + \gls{aep}, or later, will be targeted for development. This limitation is because the implementation requires geometry shaders which is not present for earlier versions. 
 Vulcan was considered and rejected because it would require too much work, which is better spent on the main algorithm, and since the algorithm is mainly \gls{gpu} bound it would not significantly increase the performance.

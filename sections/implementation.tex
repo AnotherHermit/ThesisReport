@@ -1,0 +1,87 @@
+\chapter{Implementation of Voxel Cone Tracing}\label{cha:implementation}
+
+TODO: Desribe my implementation of VCT in detail with motivations for each choice from the previous chapters.
+TODO: Add flowchart of the pipeline.
+TODO: Figures of Data structures and so on
+
+The algorithm implemented and investigated in this work is \gls{vct}, which tries to solve the global illumination problem described in the previous section. There are a lot of variants and different choices one can make when implementing the algorithm, so some alternatives will be presented along with the actual implementation.
+
+\section{Overview}
+
+The main steps of the algorithm is as follows.
+
+\begin{itemize}
+    \item Voxelize the scene and save scene data in voxels
+    \item Inject light into the voxels from direct light 
+    \item Mipmap the voxelized scene representation
+    \item Render the scene and trace cones for each pixel
+\end{itemize}
+
+Each of these points will be explained in further detail in the following sections.
+
+\section{Voxelization}
+
+As the voxelization of the scene is crucial for the tracing part it is important that a good result is reached in this step. The method implemented in this work is the rasterization approach since it had the simplest implementation and good performance for most scenes.
+
+\subsection{Rasterization}
+
+This approach to voxelization utilizes the standard GPU pipeline to rasterize triangles into 3D textures. There can be variation depending on how accurate the result needs to be. Usually this is implemented with a conservative rasterization to produce a watertight 6-connected voxel model. However, since the voxels are never shown explicitly a very crude approximation was tried at first. Basically this approach loops over all fragments which correspond to voxels in this case. 
+
+The major drawback of this approach are cases where the scene contains many small triangles that fit inside the same voxel, since this will lead to collisions when writing the voxel data. Depending on what data is written for each voxel this can be very slow since OpenGL only supports hardware atomic operations for integer type data. However, one should not be using models with lots of triangles in any case since an approximation of the scene in created. This is the approach chosen for this work.
+
+\subsection{Compute}
+
+The compute approach is performed by iterating over all triangles and performing intersection calculations with voxels. It can be implemented either using the standard pipeline or using a compute solution (e.g. compute shaders).
+
+This has the benefit of being very fast when it comes to small triangles that fit within the same voxel, but does instead show quite bad performance on scenes with very large triangles. This makes it less suitable for environment scenes which are likely to contain walls and other flat surfaces consisting of very large triangles. This has not been implemented in this work.
+
+\subsection{Hybrid}
+
+The hybrid approach takes the best of the two previous methods and combines them into a 2-pass approach where the small triangles are handled by the compute method and the large ones by the rasterization method. The result is an approach that is faster than both when it comes to environment scenes which is the type of interest in this case, in \cite{phdthesis} a speedup of 6x could be reached for Crytecs Sponza scene for example. This approach is under consideration for implementation should the rasterization approach be too slow.
+
+\subsection{Conclusion}
+
+The work prioritized the implementation of the rasterization approach since it seemed easiest to implement and had the best performance for the interesting type of scenes.
+
+In the work presented the scene is input first to a vertex shader which simply passes along all parameters to a geometry shader. The geometry shader will calculate the dominant axis of the normal and will then project the input triangle along that axis for the next step. In the fragment shader the color of the triangle is input into a 3D texture using the fragment coordinates as texture coordinates, the order they are used depend on the dominant axis.
+
+At the same time as the color is written to the 3D texture, an active voxel list is created which contain the position of all voxels which are not empty along with the count of active voxels. The positions are stored in a 32 bit integer as a RB11G10 this allows for more than 512 integer positions in all dimensions, which is just what was needed. This list is used both for mipmaping the 3D texture but also for drawing. And could possibly also be used for only updating relevant parts of the texture in dynamic scenes. 
+
+\section{Data storage}
+
+During the voxelization process some data from the model, for example color, opacity, normals, etc., should be stored somehow so that it can be used in the tracing step. There are several different approaches on this from different authors and a couple of them will be described below.
+
+\subsection{Mipmaps}
+
+In this approach the data is simply stored in 3D textures that can be mipmapped easily using \gls{ogl} standard functions. The drawback of this approach is that it takes quite a lot of memory even for scenes that are mostly empty and it is not very dynamic. However, by constructing an active-voxel list in the voxelization step only the active voxels need to be updated when lights used for direct lighting change. A similar approach could be done for dynamic objects so that they keep a reference to the voxels they are part of so that those voxels can be updated when the object moves.
+
+\subsection{Clipmaps}
+
+This is a modification of the mipmaps but instead of storing the whole range for more detailed levels they are instead clipped by distance. This means that there is far less data stored, which could instead be used on increasing the detail in the area closest to the camera. Using this approach removes the benefit of using the OpenGL mipmapping though and must be done manually instead. Since this approach is closely related to the mipmapping a similar active list could possibly be used to increase the speed of updating the structure. The drawback of this approach is supposed to be flickering effects on smaller objects that are far from the camera, this is something that could be investigated.
+
+\subsection{Sparse Voxel Octree}
+
+This is the approach in one of the first real time implementations of \gls{vct}. It requires an implementation of a \gls{gpu} based octree structure which minimizes the amount of data needed since the empty voxels don't take any storage space. However, it is very complex to construct and not very dynamic.
+
+\subsection{Conclusion}
+
+In this work the mipmap approach seemed an appropriate place to start since it is the easiest to implement and extends into clipmaps quite naturally with little effort. The active voxel list was also constructed since the standard OpenGL generation of mipmaps did not want to work and a custom mipmap pipeline had to be constructed. 
+
+The mipmap pipeline starts in the voxelization process by creating the first level of the active voxel list, this also creates a indirect draw command for drawing only the nonempty voxels and a indirect compute command which is used to create the next level of the mipmap. 
+
+The compute shader simple takes the active voxel list and samples the 3D texture for the color of the voxel, it then writes a lower resolution variant of that value into the next level of the mipmap along with a counter to tell how many voxels have written to each level. This allows the mipmaping to calculate the average when combining the voxels, though some precision is lost on the color. Since this is an approximation this is likely not very noticeable in any case.
+
+\section{Sampling}
+
+The data saved in the 3D texture is the color of the voxel and the opacity. In this work the opacity is simply a visible or not boolean. To be able to use the necessary atomic operations all information has to be stored in a 32 bit integer type. And in this case the data is saved as ARGB8. 
+
+The data that should be saved is primarily the color and opacity of the voxel. This could be improved upon by saving different colors for different directions, usually this means either isotropic (single color) or anisotropic (directional color). There is another way of storing directional information, spherical harmonics. However, the problems with isotropic color seems quite limited and the largest error seems to be light leaking. Since the focus is on speed and preferable dynamic scenes over visually correct ones the effort and computational cost of implementing directional data will be saved and focused on if the time allows.
+
+\section{Direct Light}
+
+To inject light into the scene for the first bounce of light there are several different methods with different drawbacks and benefits. The simplest solution is to use a simple shadow map from the direct light sources and set the voxels visible in the shadow map as emitting in the tracing step. The drawback of this method is if the shadow map has too low resolution or the angle is too steep only a few voxels will be colored. The solution to this would be to instead sample the shadow map from each voxel. This could lead to artifacts and light leaking especially for voxels in the distance using clipmaps. A third approach would instead be to perform a tracing from each voxel toward each light source. 
+
+The second method is the one implemented in this work since it was the simplest way putting light into the scene and could easily be extended into the mipmaping by simply splitting the alpha channel used for averaging into two parts (only 4 bits are needed for counting since maximum will be 8). Each voxel in a higher level is then also regarded as lit if at least a set number of its children are lit.
+
+The shadow map is constructed by rendering the scene orthographically from the lights viewpoint and saving the depth to a texture. This texture is then used by a compute shader that goes through the active voxel list and samples the shadow map for each voxel position. If the depth of the voxel is less or equal that of the shadow map it is considered as in light otherwise it is not.
+
