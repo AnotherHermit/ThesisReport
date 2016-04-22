@@ -2,24 +2,22 @@
 
 TODO: This is the most important chapter writing wise since this is the part most diverse people will read.
 
-In computer graphics one of the most important parts of making a scene look realistic is the illumination. It grounds objects and creates depth in a scene by creating shadows and gives information about materials by different light interactions with the objects. 
-Even though realistic illumination has been a goal of 3D rendering since the beginning of computer graphics there is still a lot of work to be done, especially when it comes to real time solutions.
+In computer graphics one of the most important parts of making a scene look realistic is the lighting. Realistic illumination has been a goal of 3D rendering since the beginning. But there is still a lot of work to do, especially when it comes to real-time solutions.
+
+It roots objects and creates depth in a scene by creating shadows. Light also gives information about materials by interacting with the objects. 
 
 \section{Motivation}
 
 TODO: This text should be very easy to understand and be intriguing for the reader.
 
-Illumination of a scene in computer graphics is a very computationally expensive task. 
-In order to make a scene render in real time a lot of effort has been made to approximate certain lighting effects without expensive calculations.
+Illumination of a scene in computer graphics is a complex task. When real light shines on a scene, it bounces and objects in the scene becomes indirect light sources. These brighten objects in the scene on sides with no direct view of the light. By approximating the effects of this behavior rendering scenes in real time is possible. 
+A common approach is to use advanced lighting algorithms and store the results. The actual rendering uses these results instead of doing expensive calculations. This makes it possible to render realistic looking static scenes in real time. 
 
-For example there are techniques for simulating the shadows cast from light bouncing in the scene, usually 
+Approximating shadows from indirect light is usually solved by Ambient Occlusion. The goal of this method is to make corners and tight spaces darker since they should receive less light.
 
-For example there are many different variants of \gls{ao} which makes tight spaces darker to approximate shadows from bouncing light. 
-Other techniques precalculate advanced lighting effects for static objects and store textures or other look-up-tables for later access. 
-While many of these techniques make it possible to interact with scenes that would otherwise be static or stuttering, they either have visible errors or are not possible for dynamic objects or lights.
+Global Illumination algorithms tries to simulate both direct and indirect light effects.  
 
-\gls{gi} tries to simulate correct lighting in a scene without using separate methods for certain effects. 
-Rendering using, for example \gls{pm}, makes it possible to create direct and indirect light (both diffuse and specular), caustics and shadows making it one of the more popular techniques for off-line rendering when high quality is needed, because it converges toward a correct solution when more photons are used.
+Rendering using, for example Photon Mapping, makes it possible to create direct and indirect light (both diffuse and specular), caustics and shadows making it one of the more popular techniques for off-line rendering when high quality is needed, because it converges toward a correct solution when more photons are used.
 
 \section{Purpose}
 
