@@ -1,27 +1,63 @@
 \chapter{Introduction}\label{cha:intro}
 
-TODO: This is the most important chapter writing wise since this is the part most diverse people will read.
+% The next focus is therefore to make it possible to render such images in a real-time frame-rate for dynamic scenes.
 
-In computer graphics one of the most important parts of making a scene look realistic is the lighting. Realistic illumination has been a goal of 3D rendering since the beginning. But there is still a lot of work to do, especially when it comes to real-time solutions.
+% This is no easy task partly because the physics and math behind light is not a trivial subject. 
 
-It roots objects and creates depth in a scene by creating shadows. Light also gives information about materials by interacting with the objects. 
+% In computer graphics one of the most important parts of making a scene look realistic is the lighting. Realistic illumination has been a goal of 3D rendering since the beginning. But there is still a lot of work to do, especially when it comes to real-time solutions.
+
+% It roots objects and creates depth in a scene by creating shadows. Light also gives information about materials by interacting with the objects. 
+
+% With the possibility to render images that are indistinguishable from photographs. 
+
+% Everything we see is caused by light interacting with the world around us. Ever since the dawn of computer graphics, one of the main goals has been to simulate and capture this interaction. There has been tremendous progress since then. And it is now possible to render images that are indistinguishable from photographs. 
+
+% The next step in this process is to render realistic scenes in real-time. Allowing not just still images of static scenes. But interactive dynamic scenes to be rendered with realistic lighting effects.
+
+
+% TODO: This is the most important chapter writing wise since this is the part most diverse people will read.
+
+As humans we are a dominantly visual creature. Vision being our main sensory input to interpret and understand the world around us. It is not surprising then that recreating images of our world has been done since the dawn of humanity. Computer graphics has enabled an unprecedented opportunity to simulate and capture realistic images of this and other realities. Development of computational resources for these tasks has increased the quality and complexity of scenes dramatically. Still a lot of work remains to be able to interact with the rendered scenes.
 
 \section{Motivation}
 
-TODO: This text should be very easy to understand and be intriguing for the reader.
+% TODO: This text should be very easy to understand and be intriguing for the reader.
 
-Illumination of a scene in computer graphics is a complex task. When real light shines on a scene, it bounces and objects in the scene becomes indirect light sources. These brighten objects in the scene on sides with no direct view of the light. By approximating the effects of this behavior rendering scenes in real time is possible. 
-A common approach is to use advanced lighting algorithms and store the results. The actual rendering uses these results instead of doing expensive calculations. This makes it possible to render realistic looking static scenes in real time. 
+%From creativity, beauty in the world to light, to global illumination. 
+%Because of physics there is a good understanding about how light is supposed to behave. 
+%While the equation accounts for many of the material-light interactions there are some exceptions. 
 
-Approximating shadows from indirect light is usually solved by Ambient Occlusion. The goal of this method is to make corners and tight spaces darker since they should receive less light.
+% Alternative 1
+Ever since humans drew paintings on the walls of caves, we have been interested in making images and models of this world. From this innate passion both art and physics has some common ancestor. 
 
-Global Illumination algorithms tries to simulate both direct and indirect light effects.  
+The invention of computer graphics has resulted in a unique opportunity to merge art and physics. To create works that not only look real but stems from computational models of the real world. To create unreal worlds that still behave as expected would they be real.\\
 
-Rendering using, for example Photon Mapping, makes it possible to create direct and indirect light (both diffuse and specular), caustics and shadows making it one of the more popular techniques for off-line rendering when high quality is needed, because it converges toward a correct solution when more photons are used.
+To achieve realism both the direct and indirect light must be simulated. Direct light meaning light that is directly affecting the point. And indirect light meaning that the light has interacted with the scene in some way before affecting the point. Combining these two result in Global Illumination.
+
+Thanks to the work in \cite{renderingeq}, there is also an equation that can be used to calculate Global Illumination in a point, referred to as the rendering equation. While this equation is very difficult (which in science means practically impossible) to solve for most cases. By approximating it, it is possible to find solutions good enough for most purposes. As computational power is growing, fewer approximations need to be made. \\
+
+For most interactive and real-time applications, direct light and its effects are simple to compute. The problem with using Global Illumination stems from the indirect light. The nature of indirect light makes it complex to model. Since environmental interactions could imply everything from simple bounces to effects such as caustics. These effects are usually approximated with techniques that use a minimal amount of resources. It can be precomputed textures where advanced lighting has been calculated before use. Or the screen information could be used to approximate indirect shadows, called screen space ambient occlusion.
+
+By using Global Illumination techniques, it is not only possible to remove many of the special solutions for lighting effects. But also to add effects that are otherwise difficult to simulate and add a lot of realism. For example caustics and soft shadows, both direct and indirect.
+
+% Alternative 2
+%When light interacts with the world it causes many different effects. Some more noticeable than others. One of the most noticeable one is shadows. Or rather a scene without shadows looks very wrong. Shadows give us a lot of information about what we see. The depth of an object, whether it is close by or far away. The height of the object, if it is on the ground or up in the air. A good example is shown in figure \ref{fig:shadowsintro}.
+
+% Alternative 3
+%Illumination of a scene in computer graphics is a complex task. When real light shines on a scene, it bounces and objects in the scene becomes indirect light sources. These brighten objects in the scene on sides with no direct view of the light. By approximating the effects of this behavior rendering scenes in real time is possible. 
+%A common approach is to use advanced lighting algorithms and store the results. The actual rendering uses these results instead of doing expensive calculations. This makes it possible to render realistic looking static scenes in real time. 
+
+%Approximating shadows from indirect light is usually solved by Ambient Occlusion. The goal of this method is to make corners and tight spaces darker since they should receive less light.
+
+%Global Illumination algorithms tries to simulate both direct and indirect light effects.  
+
+%Rendering using, for example Photon Mapping, makes it possible to create direct and indirect light (both diffuse and specular), caustics and shadows making it one of the more popular techniques for off-line rendering when high quality is needed, because it converges toward a correct solution when more photons are used.
 
 \section{Purpose}
 
-TODO: This text can be a little more technical but should lead up to the questions in the next section.
+% TODO: This text can be a little more technical but should lead up to the questions in the next section.
+
+
 
 Most solutions for \gls{gi}~\cite{sotagi} does not run in real-time (or even interactive frame-rates), but in the recent years due to hardware performance increase and novel methods (especially \gls{vct}), real time solutions to \gls{gi} has been demonstrated on high-end hardware. 
 

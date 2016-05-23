@@ -1,9 +1,51 @@
 \chapter{Theoretical Background}\label{cha:theory}
 
+In this chapter the theory behind Global Illumination will be presented along with the technical reasons why this works now. Starting with the rendering equation in \ref{sec:light}. 
+
+\section{Light Transport}\label{sec:light}
+
+
+
+\section{Evolution of GPUs}\label{sec:gpuevo}
+
+\subsection{OpenGL}\label{sec:ogl}
+
+\subsection{OpenGL ES}\label{sec:ogles}
+
+\subsubsection{Android}\label{sec:android}
+
+
+
+
+
+
+
+
+\section{Triangles? Triangles}
+
+Rendering scenes in 3D is quite different form a physical approach of what actually happens. Instead of light coming from sources to bounce around the scenes and anything that might hit our eyes is what we see. in computer graphics the traditional approach is instead to look at the scene and bounce camera rays to see what we see. This saves a lot of work and is a lot cheaper since only the things we see are being calculated anuything else is skipped. objects in the scene are represented with triangles and are completely emtpy inside. 
+The triangle representation is quite smart since it is the least amount of points necessary to represent a plane and will (unless if laying in a line or in a single point) represent a plane. So to get more detail in an object we simpmly use more triangles. This means that for complex scenes we need to draw a lot of trinalges and also modify them, rotate, translate, project them to make triangles look like objects. 
+To do this we have our GPUs. The hardware made for this purpose. GPUs are very good at doing simple operations on points lines vectors and matrices. and it does that for a lot of points at the smae tiime. Since we are going to do the exact same thing on a lot of different data this is usualyy referred to as SIMD architecture, single input (code is same) multiple data (different points).
+As time has gone by our GPUs has been getting better and better and more general in how they do things. it is not just graphics that takes andvantage of gpus anymore but all kinds of algorithms where massive parallellisation is beneficial. 
+The change from gpu pipeline being very strict to more general has made it possible to create algorithms that take a different approach to rendering and there are now algorithms that take the more physical appriach and send light into the scene and captures what is seen, this will be described in more detail in later sextions. 
+
+
+
+The starting point of rendering 3D graphics is triangels. Everything we want to draw will be represented by triangles (there are exceptions of course, like rendering mathematical shapes). The more detail the more triagles we use. There are also other ways of increasing the detail, like bump maps. 
+
+3D graphics is about redering triangle swhich gpus are really good at. The diffucult part is not the placing the object and making them visiable but the coloring of them when they are rendered to the screen. 
+The color of an object depends on many things. The base color of the object, if it is in shade or not, what light hits it. If it is a semi-transparent material (especially difficult to color). There are therefore many different ways of coloring objects in a scene. 
+
+Drawing a scene with only the color of the objects, textured or otherwise does not look very realistic as can be seen in figure XX. This is the colored triangles that our model is. This looks very boring and we can not say much about the scene execpt for which objects are directly in front of the other, but a lot of details are mot visible since there is no information abailable anout the slope of the faces. The next step of redering is therefore to add some differences based on the ligt situation. 
+
+Light interacting with materials can be divided into two main parts 
+
+
+
 TODO: IMAGES with examples for all sections below.
 TODO: This chapter should be totally objective and describe all theoretical background for all concepts used in later sections. 
 
-Light when light interacts with a scene there are many different effects that can be seen, many of which are hard to simulate and many of them are very subtle. Yet realistic light is one of the most important parts in making a rendering look plausible. 
+When light interacts with a scene there are many different effects that can be seen, many of which are hard to simulate and many of them are very subtle. Yet realistic light is one of the most important parts in making a rendering look plausible. 
 
 In real-time rendering these effects are commonly created by different methods and then put together or rendered beforehand and therefore not present for dynamic objects. Global Illumination techniques tries to simulate many of these effects in a single algorithm by different ways of modeling light and the interactions with the scene. There are a lot of different Global Illumination algorithms and some of the more popular ones are \gls{pm} and \gls{rt} however these techniques are not currently run in real-time. One of the more recent techniques is \gls{vct}, which is the one studied in this thesis.
 
